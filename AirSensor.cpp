@@ -2,8 +2,8 @@
 #include "AirSensor.h"
 
 AirSensor::AirSensor(int _pin) {
-//AirSensor::AirSensor(int _pin) {
     mainPin = _pin;
+
     // hand status related variables
     handActive = false;
     handStatusChange = false;
@@ -11,10 +11,10 @@ AirSensor::AirSensor(int _pin) {
     handIntentionPrevious = handIntention;
     
     // data input related variables
-    newData = false;
+    dataAvailable = false;
     newReading = 0;
     sensorRange = SENSOR_MAX - SENSOR_MIN;
-    volumeRange = TOP_VOLUME - VOLUME_MIN;
+    volumeRange = OUTPUT_MAX - OUTPUT_MIN;
     
     for (int i = 0; i < READINGS_ARRAY_SIZE; i++) rawReadings[i] = 0;
     for (int i = 0; i < PRE_READING_BUFFER_SIZE; i++) preBuffer[i] = -1;
@@ -26,11 +26,9 @@ AirSensor::AirSensor(int _pin) {
     gestUpDown_Center = 0;
     
     // intialize VOLUME related variables
-    masterVolume = 0;
-    gestUpDown_Bandwidth = 20;
-    gestUpDown_IgnoreRange = 70;
+    currentState = 0;
     
-//    filteredDataPrevious = 0;
+    
 } // *** END CONSTRUCTOR *** //
 
 void AirSensor::reset() {    
@@ -61,6 +59,7 @@ void AirSensor::addNewReading() {
     
     // ****** CHECK READING IS WITHIN RANGE AND MAP VALUE ACCORDINGLY ****** //   
     // adjust the value by checking if it is within acceptable range, and adjusting value
+//    if (rawReading > SENSOR_MIN && rawReading < SENSOR_MAX) { preBuffer[0] = SENSOR_RANGE - (rawReading - SENSOR_MIN); }
     if (rawReading > SENSOR_MIN && rawReading < SENSOR_MAX) { preBuffer[0] = sensorRange - (rawReading - SENSOR_MIN); }
     else if (rawReading < SENSOR_MIN) { preBuffer[0] = -1; }
     else if (rawReading > SENSOR_MAX) { preBuffer[0] = -1; }
@@ -105,7 +104,7 @@ void AirSensor::addNewReading() {
 // ***** GESTURE ON AND OFF ***** // 
 // Function that identifies gestures that turn on and off the sound of channel
 // returns false it has captured an on or off gesture within the pause interval
-int AirSensor::gestOnOff() {
+float AirSensor::gestOnOff() {
     int timeCounter = 0;    // counter that identifies how many readings fit within the gesture interval time
     int onCounter = 0;      // counter that identifies how many readings support an on gesture
     int offCounter = 0;     // counter that identifies how many readings support an off gesture
@@ -162,7 +161,7 @@ int AirSensor::gestOnOff() {
         
         if (onCounter > TREND_RECOGNITION_MIN) { 
             gestOn = true; 
-            masterVolume = TOP_VOLUME;
+            currentState = OUTPUT_MAX;
             gestOnOff_LastTime = millis();
             handIntention = UP;
             return GEST_ON;
@@ -170,7 +169,7 @@ int AirSensor::gestOnOff() {
         
         if (offCounter > TREND_RECOGNITION_MIN) { 
             gestOff = true; 
-            masterVolume = 0;
+            currentState = OUTPUT_MIN;
             gestOnOff_LastTime = millis();
             handIntention = DOWN;
             return GEST_OFF;
@@ -181,7 +180,7 @@ int AirSensor::gestOnOff() {
 } // ****** END - GESTURE ON AND OFF ****** //
 
 // ***** GESTURE VOLUME UP AND DOWN ***** // 
-int AirSensor::gestUpDown() {
+float AirSensor::gestUpDown() {
     int gestUpDown_Shift = 0;
 
     if (rawReadings[0] > 0) {
@@ -212,61 +211,66 @@ int AirSensor::gestUpDown() {
 // ***** MIDI VOLUME FUNCTIONS ***** // 
 
 // Function calls other two functions that actually handle two main types of gestures - on/off gesture, and smooth up/down gesture
-void AirSensor::updateVolumeMIDI() {
-    if (!volumeOnOffMIDI()) volumeUpDownMIDI(); 
+void AirSensor::updateState() {
+    if (!turnOnOrOff()) moveUpOrDown(); 
 }
 
 
 // function that converts up and down gesture values into a MIDI volume between 0 and 127 
-void AirSensor::volumeUpDownMIDI() {
+void AirSensor::moveUpOrDown() {
     float gestureUpDown = gestUpDown();
-    int lastMasterVolume = masterVolume;
-    masterVolume += (gestureUpDown / sensorRange) * volumeRange;
-//    masterVolume += (gestureUpDown / (TOP_VOLUME)) * TOP_VOLUME;
-    if (masterVolume > TOP_VOLUME) masterVolume = TOP_VOLUME;
-    else if (masterVolume < 0) masterVolume = 0;
-    if(lastMasterVolume != int(masterVolume)) {
-        newData = true;
+    float lastcurrentState = currentState;
+//    currentState += (gestureUpDown / SENSOR_RANGE) * volumeRange;
+    currentState += (gestureUpDown / sensorRange) * volumeRange;
+    if (currentState > OUTPUT_MAX) currentState = OUTPUT_MAX;
+    else if (currentState < OUTPUT_MIN) currentState = OUTPUT_MIN;
+    if(lastcurrentState != currentState) {
+        dataAvailable = true;
     }
 }
 
 // function that converts that converts on and off shift values into a MIDI value between 0 and 127 
-boolean AirSensor::volumeOnOffMIDI(){
-    int gestureOnOff = gestOnOff();
+boolean AirSensor::turnOnOrOff(){
+    float gestureOnOff = gestOnOff();
     if(gestureOnOff == GEST_ON) {
-        masterVolume = TOP_VOLUME;
-        newData = true;
+        currentState = OUTPUT_MAX;
+        dataAvailable = true;
         return true;
     } else if(gestureOnOff == GEST_OFF) {
-        masterVolume = 0;
-        newData = true;
+        currentState = OUTPUT_MIN;
+        dataAvailable = true;
         return true;
     }
     return false; 
 }
-
-//void AirSensor::printMIDIVolume() {
-//    Serial.println(int(masterVolume));
-//}
 
 void AirSensor::printRawReadings() {
     Serial.print("raw: ");
     Serial.println(rawReading);
 }
 
-// *** ADD NEW TIMED READING ***
-// add new reading with a timestamp
-int AirSensor::play() {
-    if (millis() - lastReading >  timer_interval) {
+// HAS STATE CHANGED: reads the sensor if the appropriate interval of time has passed. Then calls the updateState function
+//                    to process the input and determine whether the sensor's state has passed the change threshold.
+// RETURNS: true if the state of this air sensor has changed
+bool AirSensor::hasStateChanged() {
+    if (millis() - lastReading >  TIME_INTERVAL) {
         addNewReading();
-        updateVolumeMIDI();
-        if (newData) {
-            newData = false;
-            Serial.println(int(masterVolume));
-            return int(masterVolume);
-        }
+        updateState();
     }
-    return -1;
+    return dataAvailable;
+}
+
+// HAS STATE CHANGED: reads the sensor if the appropriate interval of time has passed. Then calls the updateState function
+//                    to process the input and determine whether the sensor's state has passed the change threshold.
+// RETURNS: true if the state of this air sensor has changed
+float AirSensor::getState() {
+    if (dataAvailable) dataAvailable = false;
+    Serial.println(int(currentState));
+    return currentState;
+}
+
+void AirSensor::printState() {
+    Serial.println(int(currentState));
 }
 
 

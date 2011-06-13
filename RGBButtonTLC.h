@@ -7,6 +7,7 @@
 #define RGBButtonTLC_h
 
 #include "WProgram.h"
+#include "AMUPconfig.h"
 
 class RGBButtonTLC {
     public:
@@ -14,21 +15,21 @@ class RGBButtonTLC {
         #define TOGGLE_MAX     5
         #define DIGITAL_SWITCH_DEBOUNCE   90   // interval of time that new input will be ignored via digital sensors
         #define DIGITAL_PREVIOUS_DEBOUNCE 50       // interval of time that new input will be ignored via digital sensors
-        #define MAX_BRIGHT     1000
+//        #define LED_MAX_BRIGHT     1000
 
         // switch states
         #define OFF            0   
         #define ON             1
 
         // led related constants
-        #define R              0
-        #define G              1
-        #define B              2
-        #define LED_COUNT      3   // holds the number of led pins associated to each light (set to three as default)
+//        #define R              0
+//        #define G              1
+//        #define B              2
+//        #define RGB_COUNT      3   // holds the number of led pins associated to each light (set to three as default)
 
         // pin variables
         int pin;                 // holds the arduino pin where the switch data can be read
-        int ledPins[LED_COUNT];  // holds the tlc5940 pin number for each led 
+        int ledPins[RGB_COUNT];  // holds the tlc5940 pin number for each led 
 
         // debug variables
         int debug_code;                 // holds the arduino pin where the switch data can be read
@@ -47,7 +48,7 @@ class RGBButtonTLC {
     
         // variables used to manage led states
         bool LEDavailable;            // holds whether an LED is linked to this switch/switch
-        int ledDigitalStates[TOGGLE_MAX][LED_COUNT];  // holds brightness of each led associted to toggle states(from 0 to 4056)
+        int ledDigitalStates[TOGGLE_MAX][RGB_COUNT];  // holds brightness of each led associted to toggle states(from 0 to 4056)
 
         RGBButtonTLC(int, int, int);
         void setLEDpins(int, int, int); 

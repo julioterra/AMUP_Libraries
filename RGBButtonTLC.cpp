@@ -1,5 +1,6 @@
 #include "WProgram.h"
 #include "RGBButtonTLC.h"
+#include "AMUPconfig.h"
 #include <Tlc5940.h>
 
 
@@ -23,7 +24,7 @@ RGBButtonTLC::RGBButtonTLC(int _ID, int _pin, int _states) {
     previousState = 0;
     currentToggleState = 0;  
     for (int i = 0; i < TOGGLE_MAX; i++) 
-        for (int j = 0; j < LED_COUNT; j++) ledDigitalStates[i][j] = 0;
+        for (int j = 0; j < RGB_COUNT; j++) ledDigitalStates[i][j] = 0;
 
 //    if (debug_code) {
 //        Serial.print("ID ");   
@@ -60,9 +61,9 @@ void RGBButtonTLC::setLEDpins(int _R, int _G, int _B) {
 bool RGBButtonTLC::setDigitalLEDState(int _state, int _R, int _G, int _B) {
     if (_state >= TOGGLE_MAX) _state = TOGGLE_MAX - 1;
     else if (_state < 0) _state = 0;
-    ledDigitalStates[_state][R] = constrain(_R, -1, MAX_BRIGHT);
-    ledDigitalStates[_state][G] = constrain(_G, -1, MAX_BRIGHT);
-    ledDigitalStates[_state][B] = constrain(_B, -1, MAX_BRIGHT);
+    ledDigitalStates[_state][R] = constrain(_R, -1, LED_MAX_BRIGHT);
+    ledDigitalStates[_state][G] = constrain(_G, -1, LED_MAX_BRIGHT);
+    ledDigitalStates[_state][B] = constrain(_B, -1, LED_MAX_BRIGHT);
     
 //    if (debug_code) {
 //        Serial.print("ID ");   
@@ -176,9 +177,9 @@ void RGBButtonTLC::turnOnLEDs() {
 // NOTES: you must follow a call to this function with a call to the Tlc.update() function for updates to take effect
 // PARAMS: three integers, one for each color
 void RGBButtonTLC::turnOnLEDs(int _r, int _g, int _b) {
-    Tlc.set(ledPins[R], constrain(_r,0,MAX_BRIGHT));
-    Tlc.set(ledPins[G], constrain(_g,0,MAX_BRIGHT));
-    Tlc.set(ledPins[B], constrain(_b,0,MAX_BRIGHT));
+    Tlc.set(ledPins[R], constrain(_r,0,LED_MAX_BRIGHT));
+    Tlc.set(ledPins[G], constrain(_g,0,LED_MAX_BRIGHT));
+    Tlc.set(ledPins[B], constrain(_b,0,LED_MAX_BRIGHT));
 }
 
 // TURN OFF LEDS: turns oFF the leds.
