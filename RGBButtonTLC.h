@@ -11,21 +11,10 @@
 
 class RGBButtonTLC {
     public:
-        // general constants
-        #define TOGGLE_MAX     5
+        // Switch Debounce Constants
+        #define TOGGLE_MAX                5
         #define DIGITAL_SWITCH_DEBOUNCE   90   // interval of time that new input will be ignored via digital sensors
         #define DIGITAL_PREVIOUS_DEBOUNCE 50       // interval of time that new input will be ignored via digital sensors
-//        #define LED_MAX_BRIGHT     1000
-
-        // switch states
-        #define OFF            0   
-        #define ON             1
-
-        // led related constants
-//        #define R              0
-//        #define G              1
-//        #define B              2
-//        #define RGB_COUNT      3   // holds the number of led pins associated to each light (set to three as default)
 
         // pin variables
         int pin;                 // holds the arduino pin where the switch data can be read

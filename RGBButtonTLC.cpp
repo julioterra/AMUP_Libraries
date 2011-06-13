@@ -9,6 +9,8 @@
 RGBButtonTLC::RGBButtonTLC(int _ID, int _pin, int _states) {
     ID = _ID;
     pin = _pin;  
+    pinMode(pin, INPUT);
+    
     if (_states >= 2 && _states <= TOGGLE_MAX) toggleStates = _states;
     else toggleStates = 2;
     

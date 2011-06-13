@@ -1,12 +1,13 @@
 #include "WProgram.h"
 #include "RotaryEncoder.h"
 
-RotaryEncoder::RotaryEncoder(int _ID, int _pinA, int _pinB) {
+RotaryEncoder::RotaryEncoder(int _device_ID, int _component_ID, int _pinA, int _pinB) {
     pinA = _pinA;
     pinB = _pinB;
     pinMode(pinA, INPUT); 
     pinMode(pinB, INPUT); 
-    ID = _ID;
+    ID = _component_ID;
+    device_ID = _device_ID;
 
     digitalWrite(pinA, HIGH);       // turn on pullup resistor
     digitalWrite(pinB, HIGH);       // turn on pullup resistor
@@ -68,17 +69,30 @@ bool RotaryEncoder::available(){
 
 int RotaryEncoder::get_state(){
     if (new_data) new_data = false;
-    int return_val = encoderPos;
+    encoderPosPrevious = encoderPos;
     encoderPos = 0; 
 
     if (debug_code){
         Serial.print("RotaryEncoder::get_data() - encoder position: ");
-        Serial.println(return_val, DEC);
+        Serial.println(encoderPosPrevious, DEC);
     }
 
-    return return_val;
+    return encoderPosPrevious;
 }
 
+int RotaryEncoder::get_print_state(){
+    
+    encoderPosPrevious = get_state();
+    
+    Serial.print(device_ID);
+    Serial.print(" ");
+    Serial.print(ID);
+    Serial.print(" ");
+    if (encoderPosPrevious == 65535) Serial.println("-1");
+    else Serial.println(encoderPosPrevious);
+
+    return encoderPosPrevious;
+}
 
 
 

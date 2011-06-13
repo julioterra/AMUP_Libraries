@@ -9,9 +9,13 @@
 #include "WProgram.h"
 
 /** \file
-  Configuration for AMUP sketches. This file holds constants that define variables that are used across multiple.  
+ Configuration for AMUP sketches. This file holds constants that define variables that are used across multiple.  
  
  */
+
+// switch states
+#define OFF     0    // equivalent to LOW
+#define ON      1    // equivalent to HIGH
 
 // LED Related Constants
 #define RGB_COUNT           3   // holds the number of led pins associated to each light (set to three as default)
@@ -20,13 +24,32 @@
 #define B                   2
 #define LED_MAX_BRIGHT      1000
 
-// AIR Sensor Message Init and Lock Flags
-#define AIR_CONNECT_CHAR     'c'
-#define AIR_LOCK_ON_CHAR     '<'
-#define AIR_LOCK_OFF_CHAR    '>'
+// Switch Debounce Constants
+#define TOGGLE_MAX                5        // maximum number of toggle states supported by RGB Buttons
+#define DIGITAL_SWITCH_DEBOUNCE   90       // interval of time that new input will be ignored via digital sensors
+#define DIGITAL_PREVIOUS_DEBOUNCE 50       // interval of time that new input will be ignored via digital sensors
 
-#define OUTPUT_MIN            0
-#define OUTPUT_MAX            127
+
+// I2C Message Size 
+#define I2C_RECEIVE_MSG_SIZE     25        // size of the the i2C transmit messsage
+#define I2C_TRANSMIT_MSG_SIZE    26
+
+// AIR Sensor Message Size, followed by Init and Lock Flags
+#define AIR_SERIAL_MSG_SIZE             9
+#define AIR_CONNECT_REQUEST_CHAR        'c'
+#define AIR_CONNECT_ACCEPT_CHAR         'a'
+#define AIR_LOCK_ON_CHAR                '<'
+#define AIR_LOCK_OFF_CHAR               '>'
+
+
+#define OUTPUT_MIN    0
+#define OUTPUT_MAX    127
+
+
+int add_number_to_string(int , char * , int );
+int add_string_to_string(char * , char * , int );
+int add_char_to_string(char , char * , int );
+void reset_string(char *);
 
 
 #endif

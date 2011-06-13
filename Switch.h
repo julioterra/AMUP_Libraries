@@ -38,7 +38,7 @@ class Switch {
         long lastReadPreviousState; // holds the last time the current state was recorded
     
         Switch(int, int);
-        void setPolarity(int);
+        void invertSwitch(bool);
         bool hasStateChanged();
         int getState();
         void updateLEDs();

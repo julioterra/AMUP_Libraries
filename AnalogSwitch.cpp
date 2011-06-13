@@ -7,6 +7,7 @@
 AnalogSwitch::AnalogSwitch(int _ID, int _pin) {
     ID = _ID;
     pin = _pin;  
+    pinMode(pin, INPUT);
     
     // initialize all variables
     newState = false;

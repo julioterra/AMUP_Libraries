@@ -43,7 +43,6 @@ class AnalogSwitch {
         void setAnalogRange(int, int);
         bool hasStateChanged();
         int getState();
-        int getMessage();
         void debugToggle();
 
 };

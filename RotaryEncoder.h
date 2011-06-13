@@ -20,13 +20,16 @@ class RotaryEncoder {
         int ID;
         int direction;
         volatile unsigned int encoderPos;
+        volatile unsigned int encoderPosPrevious;
+        int device_ID;
     
-        RotaryEncoder(int, int, int);         // RotaryEncoder library constructor, accepts the number of encoder pins A and B, and the interrupt pin
+        RotaryEncoder(int,int, int, int);         // RotaryEncoder library constructor, accepts the number of encoder pins A and B, and the interrupt pin
         int get_interrupt_pin();
         void set_direction(int);
         void event();                     // RotaryEncoder library method that should be called by the interrupt call back function 
         bool available();
         int get_state();
+        int get_print_state();
 };
 
 #endif

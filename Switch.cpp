@@ -7,6 +7,7 @@
 Switch::Switch(int _ID, int _pin) {
     ID = _ID;
     pin = _pin;  
+    pinMode(pin, INPUT);
     
     newState = false;
     currentState = 0;
@@ -27,15 +28,22 @@ Switch::Switch(int _ID, int _pin) {
 // HAS STATE CHANGED: reads switch pin and determines if state has changed
 // RETURNS: true if switch state has changed, false if state has not changed
 // if reading from mux, you need to set the proper pins first, outside of the library
-void Switch::setPolarity(int _onState) {
-    if (_onState <= 0) isInverted = true;
-    else isInverted = false;
+void Switch::invertSwitch(bool _onState) {
+    if (_onState) { 
+        isInverted = true;    
+        digitalWrite(pin, HIGH);
+    }
+    
+    else {
+        isInverted = false;   
+        digitalWrite(pin, LOW);
+    }
     
     //    if (debug_code) {
     //        Serial.print("ID ");   
     //        Serial.print(ID);   
     //        Serial.print(": setPolarity(), polarity: ");   
-    //        Serial.print(constrain(_onState, -1, 2);   
+    //        Serial.print(isInverted);   
     //    }
 
 }
@@ -47,6 +55,11 @@ bool Switch::hasStateChanged() {
 //    long currentTime = millis();
 
     currentState = digitalRead(pin);
+    
+    if (isInverted) {
+        if (currentState == LOW) currentState = HIGH;
+        else currentState = LOW;        
+    }
 
 //    if (debug_code) {
 //        Serial.print(millis());
