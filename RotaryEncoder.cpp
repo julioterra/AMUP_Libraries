@@ -14,7 +14,6 @@ RotaryEncoder::RotaryEncoder(int _device_ID, int _component_ID, int _pinA, int _
 
     encoderPos = 0;
     new_data = false;
-    debug_code = false;
     direction = 1;
     
     if (_pinA == 2) interruptPin = 0;

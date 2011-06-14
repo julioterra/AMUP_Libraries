@@ -1,5 +1,5 @@
 #include "WProgram.h"
-#include "RGBButton.h"
+#include "RGBButtonMatrix.h"
 
 
 /********************************************** 
@@ -7,7 +7,7 @@
  **********************************************/
 // CONSTRUCTOR: initializes an instance of the switch class
 // PARAMS: an id number for the switch and the input pin number
-RGBButton::RGBButton(int _ID, int _input_pin, int _states) : Switch(_ID, _input_pin) {
+RGBButtonMatrix::RGBButtonMatrix(int _ID, int _input_pin, int _states) : Switch(_ID, _input_pin) {
     toggle_states = _states;
     is_momentary = false;
     
@@ -20,18 +20,24 @@ RGBButton::RGBButton(int _ID, int _input_pin, int _states) : Switch(_ID, _input_
 }
 
 /********************************************** 
- * VIRTUAL FUNCTION 
- */
-void RGBButton::set_led_pins(int _LED_pin, int _R_pin, int _G_pin, int _B_pin) {
+ * FUNCTION THAT NEEDS TO BE CUSTOMIZED BETWEEN MATRIX AND TLC APPROACHES
+ **********************************************/
+void RGBButtonMatrix::set_led_pins(int _LED_pin, int _R_pin, int _G_pin, int _B_pin) {
+    led_on = true;
+    led_available = true;
+    
+    led_button_pin = _LED_pin;
+    led_common_pins[R] = _R_pin; 
+    led_common_pins[G] = _G_pin;
+    led_common_pins[B] = _B_pin;
+
+    pinMode(led_button_pin, OUTPUT);
+    pinMode(led_common_pins[R], OUTPUT);
+    pinMode(led_common_pins[G], OUTPUT);
+    pinMode(led_common_pins[B], OUTPUT);
 }
 
-/********************************************** 
- * VIRTUAL FUNCTION 
- */
-void RGBButton::set_led_pins(int _R_pin, int _G_pin, int _B_pin) {
-}
-
-bool RGBButton::set_led_state(int _state, int _R, int _G, int _B) {
+bool RGBButtonMatrix::set_led_state(int _state, int _R, int _G, int _B) {
     if (_state >= TOGGLE_MAX || _state < 0 || !led_available) return false;
 
     led_digital_states[_state][R] = constrain(_R, 0, 1);
@@ -40,7 +46,7 @@ bool RGBButton::set_led_state(int _state, int _R, int _G, int _B) {
     return true;
 }
 
-bool RGBButton::available() {    
+bool RGBButtonMatrix::available() {    
     update_leds();
     if(Switch::available()) {
         if (is_momentary) {
@@ -60,7 +66,7 @@ bool RGBButton::available() {
 }
 
 
-void RGBButton::set_current_led_state(int _state) {
+void RGBButtonMatrix::set_current_led_state(int _state) {
     current_led_state[R] = led_digital_states[_state][R];
     current_led_state[G] = led_digital_states[_state][G];
     current_led_state[B] = led_digital_states[_state][B];
@@ -68,34 +74,47 @@ void RGBButton::set_current_led_state(int _state) {
 
 // HAS STATE CHANGED: reads switch pin and determines if state has changed
 // RETURNS: true if switch state has changed, false if state has not changed
-int RGBButton::get_state() {
+int RGBButtonMatrix::get_state() {
     if (new_state) new_state = false;
     return current_toggle_state;
 }
 
-void RGBButton::turn_on_leds() {
+void RGBButtonMatrix::turn_on_leds() {
     led_on = true;
 }
 
-void RGBButton::turn_on_leds(int _R, int _G, int _B) {
+void RGBButtonMatrix::turn_on_leds(int _R, int _G, int _B) {
     current_led_state[R] = constrain(_R, 0, 1);
     current_led_state[G] = constrain(_G, 0, 1);
     current_led_state[B] = constrain(_B, 0, 1);
     led_on = true;
 }
 
-void RGBButton::turn_off_leds() {
+void RGBButtonMatrix::turn_off_leds() {
     led_on = false;
 }
 
 /********************************************** 
- * VIRTUAL FUNCTION 
- */
-void RGBButton::update_leds() {  
+ * FUNCTION THAT NEEDS TO BE CUSTOMIZED BETWEEN MATRIX AND TLC APPROACHES
+ **********************************************/
+void RGBButtonMatrix::update_leds() {  
+    if(led_available) {
+        if (led_on) {
+            digitalWrite(led_common_pins[R], current_led_state[R]);
+            digitalWrite(led_common_pins[G], current_led_state[G]);
+            digitalWrite(led_common_pins[B], current_led_state[B]);
+            digitalWrite(led_button_pin, LOW); 
+            delayMicroseconds(30);
+            digitalWrite(led_button_pin, HIGH); 
+        } 
+        else {
+            digitalWrite(led_common_pins[R], LOW);
+            digitalWrite(led_common_pins[G], LOW);
+            digitalWrite(led_common_pins[B], LOW);
+            digitalWrite(led_button_pin, HIGH); 
+        }
+    }
 }
 
-void RGBButton::momentary_button (bool _is_momentary){
-    is_momentary = _is_momentary;
-}
 
 

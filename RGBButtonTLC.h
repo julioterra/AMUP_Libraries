@@ -8,7 +8,7 @@
 
 #include "WProgram.h"
 #include "AMUPconfig.h"
-
+    
 class RGBButtonTLC {
     public:
         // Switch Debounce Constants
@@ -19,9 +19,6 @@ class RGBButtonTLC {
         // pin variables
         int pin;                 // holds the arduino pin where the switch data can be read
         int ledPins[RGB_COUNT];  // holds the tlc5940 pin number for each led 
-
-        // debug variables
-        int debug_code;                 // holds the arduino pin where the switch data can be read
 
         // variables for object ID and toggle states
         int ID;                   // holds identifier for the switch can be used as mux number for this switch
@@ -37,7 +34,7 @@ class RGBButtonTLC {
     
         // variables used to manage led states
         bool LEDavailable;            // holds whether an LED is linked to this switch/switch
-        int ledDigitalStates[TOGGLE_MAX][RGB_COUNT];  // holds brightness of each led associted to toggle states(from 0 to 4056)
+        int LEDdigitalStates[TOGGLE_MAX][RGB_COUNT];  // holds brightness of each led associted to toggle states(from 0 to 4056)
 
         RGBButtonTLC(int, int, int);
         void setLEDpins(int, int, int); 
@@ -48,8 +45,6 @@ class RGBButtonTLC {
         void turnOnLEDs();
         void turnOnLEDs(int, int, int);
         void turnOffLEDs();
-        void debugToggle();
-    
 };
 
 #endif

@@ -7,6 +7,7 @@
 #define Switch_h
 
 #include "WProgram.h"
+#include "AMUPconfig.h"
 
 class Switch {
     public:
@@ -21,31 +22,24 @@ class Switch {
         // pin variables
         int pin;                 // holds the arduino pin where the switch data can be read
 
-        // debug variables
-        int debug_code;                 // holds the arduino pin where the switch data can be read
-
         // variables for object ID and toggle states
         int ID;                   // holds identifier for the switch can be used as mux number for this switch
     
         // holds whether the signal is inverted (e.g. LOW switch state is equal to switch ON or HIGH)
-        bool isInverted;
+        bool is_inverted;
+        bool is_momentary;
 
         // variables that manage switch state
-        int currentState;           // holds new state of switch, that is compared to current state to determine if changes occured
-        int previousState;          // holds the current momentary state of the switch (on, off, or analog number)
-        bool newState;              // holds whether the switch has changed state since last data read/get
-        long lastStateSwitch;       // holds last time the switch state was changed
-        long lastReadPreviousState; // holds the last time the current state was recorded
+        int current_state;           // holds new state of switch, that is compared to current state to determine if changes occured
+        int previous_state;          // holds the current momentary state of the switch (on, off, or analog number)
+        bool new_state;              // holds whether the switch has changed state since last data read/get
+        long last_state_switch;       // holds last time the switch state was changed
+        long last_read_previous_state; // holds the last time the current state was recorded
     
         Switch(int, int);
-        void invertSwitch(bool);
-        bool hasStateChanged();
-        int getState();
-        void updateLEDs();
-        void turnOnLEDs();
-        void turnOffLEDs();
-        void debugToggle();
-    
+        void invert_switch(bool);
+        bool available();
+        int get_state();    
 };
 
 #endif

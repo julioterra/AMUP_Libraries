@@ -1,16 +1,17 @@
 /*
- RGBButton.h - Library for the AMUP Button Pad.
+ RGBButtonMatrix.h - Library for the AMUP Button Pad.
  Created by Julio Terra, June 4, 2011.
  */
 
-#ifndef RGBButton_h
-#define RGBButton_h
+#ifndef RGBButtonMatrix_h
+#define RGBButtonMatrix_h
 
 #include "WProgram.h"
 #include "Switch.h"
 #include "AMUPconfig.h"
 
-class RGBButton: public Switch {
+class RGBButtonMatrix: public Switch {
+    
     
     public:    
         int led_button_pin;
@@ -25,19 +26,17 @@ class RGBButton: public Switch {
     
         int led_digital_states[TOGGLE_MAX][RGB_COUNT];  // holds brightness of each led associted to toggle states(from 0 to 4056) 
 
-        RGBButton(int, int, int);
-        virtual void set_led_pins(int, int, int, int);
-        virtual void set_led_pins(int, int, int);
+        RGBButtonMatrix(int, int, int);
+        void set_led_pins(int, int, int, int);
         bool set_led_state(int, int, int, int);
         bool available();
         int get_state();
+        void update_leds();
         void turn_on_leds(int, int, int);
         void turn_on_leds();
         void turn_off_leds();
         void set_current_led_state(int);
-        void momentary_button(bool);
-    
-        virtual void update_leds();
+
 };
 
 #endif

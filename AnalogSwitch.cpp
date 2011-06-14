@@ -61,8 +61,8 @@ bool AnalogSwitch::hasStateChanged() {
     if (currentState > (previousState + STATE_CHANGE_THRESH) || currentState < (previousState - STATE_CHANGE_THRESH)) {
         newState = true;
         previousState = currentState;
-        if (analogRange == OUTPUT_ANALOG_RANGE) adjustedAnalogState = currentState;
-        else adjustedAnalogState = int(float(float((currentState) - analogRangeMin)/float(analogRange)) * float(OUTPUT_ANALOG_RANGE));
+        if (analogRange == OUTPUT_RANGE) adjustedAnalogState = currentState;
+        else adjustedAnalogState = int(float(float((currentState) - analogRangeMin)/float(analogRange)) * float(OUTPUT_RANGE));
 
 //        if (debug_code) {
 //            Serial.print("ID ");   
@@ -91,18 +91,4 @@ int AnalogSwitch::getState() {
 //    }
 
     return adjustedAnalogState;
-}
-
-// DEBUG TOGGLE: turns the debugging on and off, this prints a lot information to the serial port
-// PARAMS RETURNS: n/a
-void AnalogSwitch::debugToggle() {
-    if (debug_code) debug_code = false;
-    else debug_code = true;
-
-//    if (debug_code) {
-//        Serial.print("ID ");   
-//        Serial.print(ID);   
-//        Serial.print(": debugToggle(), debug status is: ");   
-//        Serial.println(debug_code);   
-//    }
 }
