@@ -26,7 +26,7 @@ RGBButtonTLC::RGBButtonTLC(int _ID, int _pin, int _states) {
     previousState = 0;
     currentToggleState = 0;  
     for (int i = 0; i < TOGGLE_MAX; i++) 
-        for (int j = 0; j < RGB_COUNT; j++) ledDigitalStates[i][j] = 0;
+        for (int j = 0; j < RGB_COUNT; j++) LEDdigitalStates[i][j] = 0;
 
 //    if (debug_code) {
 //        Serial.print("ID ");   
@@ -63,24 +63,10 @@ void RGBButtonTLC::setLEDpins(int _R, int _G, int _B) {
 bool RGBButtonTLC::setDigitalLEDState(int _state, int _R, int _G, int _B) {
     if (_state >= TOGGLE_MAX) _state = TOGGLE_MAX - 1;
     else if (_state < 0) _state = 0;
-    ledDigitalStates[_state][R] = constrain(_R, -1, LED_MAX_BRIGHT);
-    ledDigitalStates[_state][G] = constrain(_G, -1, LED_MAX_BRIGHT);
-    ledDigitalStates[_state][B] = constrain(_B, -1, LED_MAX_BRIGHT);
+    LEDdigitalStates[_state][R] = constrain(_R, 0, LED_MAX_BRIGHT_TLC);
+    LEDdigitalStates[_state][G] = constrain(_G, 0, LED_MAX_BRIGHT_TLC);
+    LEDdigitalStates[_state][B] = constrain(_B, 0, LED_MAX_BRIGHT_TLC);
     
-//    if (debug_code) {
-//        Serial.print("ID ");   
-//        Serial.print(ID);   
-//        Serial.print(": setDigitalLEDState(), set state: ");   
-//        Serial.println(_state);   
-//        Serial.print(", set RGB: ");   
-//        Serial.print(ledDigitalStates[_state][R]);   
-//        Serial.print(", ");   
-//        Serial.print(ledDigitalStates[_state][G]);   
-//        Serial.print(", ");   
-//        Serial.println(ledDigitalStates[_state][B]);   
-//    }
-    
-//    if (type == DIGITAL && _state < toggleStates && LEDavailable) return true;
     if (_state < toggleStates && LEDavailable) return true;
     else return false;
 }
@@ -153,11 +139,11 @@ void RGBButtonTLC::updateLEDs() {
 //            Serial.print("ID ");   
 //            Serial.print(ID);   
 //            Serial.print(": updateLEDs(), Rval : ");   
-//            Serial.print(ledDigitalStates[currentToggleState][R]);   
+//            Serial.print(LEDdigitalStates[currentToggleState][R]);   
 //            Serial.print(", Gval : ");   
-//            Serial.print(ledDigitalStates[currentToggleState][G]);   
+//            Serial.print(LEDdigitalStates[currentToggleState][G]);   
 //            Serial.print(", Bval : ");   
-//            Serial.println(ledDigitalStates[currentToggleState][B]);   
+//            Serial.println(LEDdigitalStates[currentToggleState][B]);   
 //        }
         
         if (newState) {
@@ -170,18 +156,18 @@ void RGBButtonTLC::updateLEDs() {
 // NOTES: you must follow a call to this function with a call to the Tlc.update() function for updates to take effect
 // PARAMS & RETURNS: N/A
 void RGBButtonTLC::turnOnLEDs() {
-    Tlc.set(ledPins[R], ledDigitalStates[currentToggleState][R]);
-    Tlc.set(ledPins[G], ledDigitalStates[currentToggleState][G]);
-    Tlc.set(ledPins[B], ledDigitalStates[currentToggleState][B]);
+    Tlc.set(ledPins[R], LEDdigitalStates[currentToggleState][R]);
+    Tlc.set(ledPins[G], LEDdigitalStates[currentToggleState][G]);
+    Tlc.set(ledPins[B], LEDdigitalStates[currentToggleState][B]);
 }
 
 // TURN ON LEDS: turns on the leds. activates the color passed in parameters.
 // NOTES: you must follow a call to this function with a call to the Tlc.update() function for updates to take effect
 // PARAMS: three integers, one for each color
 void RGBButtonTLC::turnOnLEDs(int _r, int _g, int _b) {
-    Tlc.set(ledPins[R], constrain(_r,0,LED_MAX_BRIGHT));
-    Tlc.set(ledPins[G], constrain(_g,0,LED_MAX_BRIGHT));
-    Tlc.set(ledPins[B], constrain(_b,0,LED_MAX_BRIGHT));
+    Tlc.set(ledPins[R], constrain(_r, 0, LED_MAX_BRIGHT_TLC));
+    Tlc.set(ledPins[G], constrain(_g, 0, LED_MAX_BRIGHT_TLC));
+    Tlc.set(ledPins[B], constrain(_b, 0, LED_MAX_BRIGHT_TLC));
 }
 
 // TURN OFF LEDS: turns oFF the leds.
@@ -192,19 +178,3 @@ void RGBButtonTLC::turnOffLEDs() {
     Tlc.set(ledPins[G], 0);
     Tlc.set(ledPins[B], 0);
 }
-
-
-// DEBUG TOGGLE: turns the debugging on and off, this prints a lot information to the serial port
-// PARAMS RETURNS: n/a
-void RGBButtonTLC::debugToggle() {
-    if (debug_code) debug_code = false;
-    else debug_code = true;
-
-//    if (debug_code) {
-//        Serial.print("ID ");   
-//        Serial.print(ID);   
-//        Serial.print(": debugToggle(), debug status is: ");   
-//        Serial.println(debug_code);   
-//    }
-}
-

@@ -9,12 +9,13 @@ Switch::Switch(int _ID, int _pin) {
     pin = _pin;  
     pinMode(pin, INPUT);
     
-    newState = false;
-    currentState = 0;
-    previousState = 0;
-    lastStateSwitch = 0;
-    lastReadPreviousState = 0;
-    isInverted = false;
+    new_state = false;
+    current_state = 0;
+    previous_state = 0;
+    last_state_switch = 0;
+    last_read_previous_state = 0;
+    is_inverted = false;
+    is_momentary = true;
 
 //    if (debug_code) {
 //        Serial.print("ID ");   
@@ -28,14 +29,14 @@ Switch::Switch(int _ID, int _pin) {
 // HAS STATE CHANGED: reads switch pin and determines if state has changed
 // RETURNS: true if switch state has changed, false if state has not changed
 // if reading from mux, you need to set the proper pins first, outside of the library
-void Switch::invertSwitch(bool _onState) {
+void Switch::invert_switch(bool _onState) {
     if (_onState) { 
-        isInverted = true;    
+        is_inverted = true;    
         digitalWrite(pin, HIGH);
     }
     
     else {
-        isInverted = false;   
+        is_inverted = false;   
         digitalWrite(pin, LOW);
     }
     
@@ -43,7 +44,7 @@ void Switch::invertSwitch(bool _onState) {
     //        Serial.print("ID ");   
     //        Serial.print(ID);   
     //        Serial.print(": setPolarity(), polarity: ");   
-    //        Serial.print(isInverted);   
+    //        Serial.print(is_inverted);   
     //    }
 
 }
@@ -51,39 +52,20 @@ void Switch::invertSwitch(bool _onState) {
 // HAS STATE CHANGED: reads switch pin and determines if state has changed
 // RETURNS: true if switch state has changed, false if state has not changed
 // if reading from mux, you need to set the proper pins first, outside of the library
-bool Switch::hasStateChanged() {
-//    long currentTime = millis();
-
-    currentState = digitalRead(pin);
+bool Switch::available() {
+    current_state = digitalRead(pin);
     
-    if (isInverted) {
-        if (currentState == LOW) currentState = HIGH;
-        else currentState = LOW;        
+    if (is_inverted) {
+        if (current_state == LOW) current_state = HIGH;
+        else current_state = LOW;        
     }
 
-//    if (debug_code) {
-//        Serial.print(millis());
-//        Serial.print(" ID ");   
-//        Serial.print(ID);   
-//        Serial.print(": hasStateChanged(), digital momentary state: ");   
-//        Serial.println(currentState);   
-//    }
-    
-    if (currentState == previousState) lastReadPreviousState = millis();
-    else if (currentState != previousState) {
-        if(((millis() - lastStateSwitch) > DIGITAL_SWITCH_DEBOUNCE) || ((millis() - lastReadPreviousState) > DIGITAL_PREVIOUS_DEBOUNCE)) {
-            newState = true;
-            lastStateSwitch = millis();
-            previousState = currentState;   
-            
-//            if (debug_code) {
-//                Serial.print(millis());
-//                Serial.print(" ID ");   
-//                Serial.print(ID);   
-//                Serial.print(": hasStateChanged(), switch state: ");   
-//                Serial.println(currentState);   
-//            }
-
+    if (current_state == previous_state) last_read_previous_state = millis();
+    else if (current_state != previous_state) {
+        if(((millis() - last_state_switch) > DIGITAL_SWITCH_DEBOUNCE) || ((millis() - last_read_previous_state) > DIGITAL_PREVIOUS_DEBOUNCE)) {
+            new_state = true;
+            last_state_switch = millis();
+            previous_state = current_state;   
             return true;   
         }
     }
@@ -94,32 +76,17 @@ bool Switch::hasStateChanged() {
 
 // HAS STATE CHANGED: reads switch pin and determines if state has changed
 // RETURNS: true if switch state has changed, false if state has not changed
-int Switch::getState() {
-    if (newState) {
-        newState = false;
+int Switch::get_state() {
+    if (new_state) {
+        new_state = false;
     }
 
 //    if (debug_code) {
 //        Serial.print("ID ");   
 //        Serial.print(ID);   
 //        Serial.print(": getState(), led state updated, message passed: ");   
-//        Serial.println(currentState);   
+//        Serial.println(current_state);   
 //    }
 
-    return currentState;
+    return current_state;
 }
-
-// DEBUG TOGGLE: turns the debugging on and off, this prints a lot information to the serial port
-// PARAMS RETURNS: n/a
-void Switch::debugToggle() {
-    if (debug_code) debug_code = false;
-    else debug_code = true;
-
-//    if (debug_code) {
-//        Serial.print("ID ");   
-//        Serial.print(ID);   
-//        Serial.print(": debugToggle(), debug status is: ");   
-//        Serial.println(debug_code);   
-//    }
-}
-

@@ -7,6 +7,7 @@
 #define RotaryEncoder_h
 
 #include "WProgram.h"
+#include "AMUPconfig.h"
 
 class RotaryEncoder {
     private: 
@@ -14,7 +15,6 @@ class RotaryEncoder {
         int pinB;
         int interruptPin;
         bool new_data;
-        bool debug_code;
         
     public:
         int ID;

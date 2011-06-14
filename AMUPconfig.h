@@ -22,7 +22,9 @@
 #define R                   0
 #define G                   1
 #define B                   2
-#define LED_MAX_BRIGHT      1000
+
+// LED TLC Constants
+#define LED_MAX_BRIGHT_TLC  1000
 
 // Switch Debounce Constants
 #define TOGGLE_MAX                5        // maximum number of toggle states supported by RGB Buttons
@@ -44,7 +46,9 @@
 
 #define OUTPUT_MIN    0
 #define OUTPUT_MAX    127
+#define OUTPUT_RANGE  OUTPUT_MAX - OUTPUT_MIN
 
+#define debug_code    false         // holds the arduino pin where the switch data can be read
 
 int add_number_to_string(int , char * , int );
 int add_string_to_string(char * , char * , int );

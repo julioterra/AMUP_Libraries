@@ -7,21 +7,17 @@
 #define AnalogSwitch_h
 
 #include "WProgram.h"
+#include "AMUPconfig.h"
 
 class AnalogSwitch {
     public:
         // switch types
-        #define OUTPUT_ANALOG_RANGE       127     
-        #define AVG_READINGS              10
-        #define STATE_CHANGE_THRESH       8
-        #define DIGITAL_SWITCH_DEBOUNCE   100   // interval of time that new input will be ignored via digital sensors
-        #define DIGITAL_PREVIOUS_DEBOUNCE 70   // interval of time that new input will be ignored via digital sensors
+        #define OUTPUT_RANGE            127     
+        #define AVG_READINGS            10
+        #define STATE_CHANGE_THRESH     8
 
         // pin variables
         int pin;                 // holds the arduino pin where the switch data can be read
-
-        // debug variables
-        int debug_code;                 // holds the arduino pin where the switch data can be read
 
         // variables for object ID and types
         int ID;                  // holds identifier for the switch can be used as mux number for this switch
@@ -43,7 +39,6 @@ class AnalogSwitch {
         void setAnalogRange(int, int);
         bool hasStateChanged();
         int getState();
-        void debugToggle();
 
 };
 
