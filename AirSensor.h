@@ -8,24 +8,23 @@
 
 #include "WProgram.h"
 #include "AMUPconfig.h"
+#include "InputElement.h"
 
-class AirSensor {
+class AirSensor : public InputElement {
     private: 
-        #define PRE_READING_BUFFER_SIZE      20  
-        #define READINGS_ARRAY_SIZE          10
-        #define TREND_RECOGNITION_MIN        4      
-        #define TREND_NOISE_THRESHOLD        4      
-        #define TIME_INTERVAL                15
+        #define PRE_READING_BUFFER_SIZE     20  
+        #define READINGS_ARRAY_SIZE         10
+        #define TREND_RECOGNITION_MIN       4      
+        #define TREND_NOISE_THRESHOLD       4      
+        #define TIME_INTERVAL               15
 
-        #define SENSOR_MIN                   125
-        #define SENSOR_MAX                   480
+        #define SENSOR_MIN                  125
+        #define SENSOR_MAX                  480
 
-        #define gestOnOff_SequenceTime       300
-        #define gestOnOff_FullDelta          170
-        #define gestOnOff_GradientDelta      100
-        #define gestOnOff_PauseInterval      450
-        #define gestUpDown_Bandwidth         30
-        #define gestUpDown_IgnoreRange       70
+        #define ON_OFF_DELTA_THRESHOLD      170
+        #define ON_OFF_DELTA_MAX_STEP       100
+        #define ON_OFF_PAUSE_TIME           450
+        #define UP_DOWN_MIN_DELTA           30
 
         #define UP                           0
         #define DOWN                         1
@@ -33,49 +32,40 @@ class AirSensor {
         #define GEST_ON                      1
         #define GEST_OFF                     0
         
-        int mainPin;
-        int sensorRange;
-        
+        int sensor_range;
+
         // hand sensing variables
-        boolean dataAvailable;
-        boolean handActive;
-        boolean handStatusChange;
-        int handIntentionPrevious;
+        boolean hand_active;
+        boolean hand_state_change;
         
         // On/Off Gesture
-        unsigned long gestOnOff_LastTime;
-        boolean gestOn;
-        boolean gestOff;
+        unsigned long gest_on_off_time;
+        boolean gest_on;
+        boolean gest_off;
         
         // GEST_UP/Down Gesture
-        int gestUpDown_Center;
-    
-        void moveUpOrDown();
-        boolean turnOnOrOff();
-        float gestOnOff();
-        float gestUpDown();
+        int gest_up_down_filter_center;
 
-    public:
         // data capture and processing variables
-        unsigned long lastReading;
-        int rawReading;
-        int rawReadings[READINGS_ARRAY_SIZE];
-        int preBuffer[PRE_READING_BUFFER_SIZE];
-        int newReading;
-        int handIntention;
+        int raw_reading;
+        int raw_readings[READINGS_ARRAY_SIZE];
+        int median_buffer[PRE_READING_BUFFER_SIZE];
+        int new_reading;
+        int hand_state;
+        int output_range;
 
-        int volumeRange;
-        float currentState;
-        
-        AirSensor(int);
-        void setProximityPin(int);
+        void add_new_reading();
+        void move_up_down();
+        boolean turn_on_off();
+        float gest_on_off();
+        float gest_up_down();
+
+    public:        
+        AirSensor(int, int);
         void reset();
-        void addNewReading();
-        void updateState();
-        bool hasStateChanged();
-        float getState();
-        void printState(); 
-        void printRawReadings();
+        bool available();
+        void print_raw_readings();
+    
 };
 
 #endif

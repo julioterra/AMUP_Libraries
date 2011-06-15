@@ -24,7 +24,8 @@
 #define B                   2
 
 // LED TLC Constants
-#define LED_MAX_BRIGHT_TLC  1000
+#define LED_MAX_BRIGHT_TLC      1000
+#define LED_MAX_BRIGHT_MATRIX   1
 
 // Switch Debounce Constants
 #define TOGGLE_MAX                5        // maximum number of toggle states supported by RGB Buttons
