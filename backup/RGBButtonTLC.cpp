@@ -1,4 +1,6 @@
+#include "WProgram.h"
 #include "RGBButtonTLC.h"
+#include <Tlc5940.h>
 
 // CONSTRUCTOR: initializes an instance of the switch class
 // PARAMS: an id number for the switch and the input pin number and number of states

@@ -1,3 +1,4 @@
+#include "WProgram.h"
 #include "AirSensor.h"
 
 AirSensor::AirSensor(int _ID, int _pin) : InputElement(_ID, _pin) {
@@ -88,6 +89,7 @@ void AirSensor::add_new_reading() {
     raw_readings[0] = new_reading;
     
 } // *** END NEW READING FUNCTION ***
+
 
 // ***** GESTURE ON AND OFF ***** // 
 // Function that identifies gestures that turn on and off the sound of channel

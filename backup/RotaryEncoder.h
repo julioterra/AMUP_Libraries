@@ -8,28 +8,29 @@
 
 #include "WProgram.h"
 #include "AMUPconfig.h"
+#include "InputElement.h"
 
-class RotaryEncoder {
+class RotaryEncoder: public InputElement {
     private: 
-        int pinA;
-        int pinB;
-        int interruptPin;
-        bool new_data;
+//        int pin_a;
+        int pin_b;
+        int interrupt_pin;
+//        bool new_data;
         
     public:
-        int ID;
+//        int ID;
         int direction;
         volatile int encoderPos;
-        volatile int encoderPosPrevious;
-        int device_ID;
+//        volatile int output_state;
+//        int device_ID;
     
-        RotaryEncoder(int,int, int, int);         // RotaryEncoder library constructor, accepts the number of encoder pins A and B, and the interrupt pin
-        int get_interrupt_pin();
-        void set_direction(int);
-        void event();                     // RotaryEncoder library method that should be called by the interrupt call back function 
-        bool available();
-        int get_state();
-        int get_print_state();
+        RotaryEncoder(int, int, int);   // RotaryEncoder library constructor, accepts the number of encoder pins A and B, and the interrupt pin
+        int get_interrupt_pin();        // returns the appropriate interrupt pin number for pin_a of the encoder
+        void set_direction(int);        // enables changing of direction based on whether you enter a number that is greater or smaller than 0
+        void event();                   // method that should be called by the interrupt call back function 
+        bool available();               // returns whether the state of the encoder has changed
+//        float get_state();              // returns the actual state of the encoder
+//        float get_print_state();        // 
 };
 
 #endif

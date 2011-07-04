@@ -1,6 +1,16 @@
 /*
- AnalogSwitch.h - Library for the AMUP Button Pad.
+ AMUP Input Element Libraries, Analog Switch
  Created by Julio Terra, June 4, 2011.
+ 
+ This is the analog switch library from the AMUP Input Element set. This 
+ library handles analog switches such as potentiometers and other 
+ variable resistors.
+ 
+ Hierarchy:
+ - Parents: Input Element
+ - Children: n/a 
+ 
+ File name: AnalogSwitch.h 
  */
 
 #ifndef AnalogSwitch_h
@@ -12,22 +22,22 @@
 
 class AnalogSwitch: public InputElement {
     public:
-        // switch types
+        // range and averaging variables
         #define OUTPUT_RANGE            127     
         #define AVG_READINGS            10
         #define STATE_CHANGE_THRESH     8
 
         // variables that manage switch state
-        int previous_state;        // holds the current momentary state of the switch (on, off, or analog number)
+        int last_reading;        // holds the current momentary state of the switch (on, off, or analog number)
 
         // variables that define and manage analog range
         int range_min;      // holds the bottom of the range of an analog sensor
         int range_max;      // holds the top of the range of an analog sensor
-        int range;         // holds the size of the range of an analog sensor
+        int range;          // holds the size of the range of an analog sensor
 
-        AnalogSwitch(int, int);
-        void set_analog_range(int, int);
-        bool available();
+        AnalogSwitch(int, int);             // constructor
+        void set_analog_range(int, int);    // set range for analog switch
+        bool available();                   // redefine the avaiable method
 
 };
 
