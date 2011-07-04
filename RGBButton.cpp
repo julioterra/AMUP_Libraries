@@ -1,4 +1,3 @@
-#include "WProgram.h"
 #include "RGBButton.h"
 
 // CONSTRUCTOR: initializes an instance of the switch class
@@ -15,6 +14,8 @@ RGBButton::RGBButton(int _ID, int _input_pin, int _states) : Switch(_ID, _input_
         for (int j = 0; j < RGB_COUNT; j++) led_digital_states[i][j] = 0;
 }
 
+// SET LED STATE: sets the R, G, B values of a button state
+// PARAMS: a state number, and an R, G, and B value
 bool RGBButton::set_led_state(int _state, int _R, int _G, int _B) {
     if (_state >= TOGGLE_MAX || _state < 0 || !led_available) return false;
 
@@ -31,6 +32,8 @@ bool RGBButton::set_led_state(int _state, int _R, int _G, int _B) {
     return true;
 }
 
+// AVAILABLE: method that reads button and determines if state has changed (new data available
+// RETURNS: true if state has changed, false if state has not changed
 bool RGBButton::available() {    
     update_leds();
     if(Switch::available()) {
@@ -50,27 +53,37 @@ bool RGBButton::available() {
     else return false;
 }
 
+// AVAILABLE: method that reads button and determines if state has changed (new data available
+// RETURNS: true if state has changed, false if state has not changed
 void RGBButton::set_current_led_state(int _state) {
     current_led_state[R] = led_digital_states[_state][R];
     current_led_state[G] = led_digital_states[_state][G];
     current_led_state[B] = led_digital_states[_state][B];
 }
 
+
+// TURN ON LEDS: turns on the leds by setting the led_on to true
+// NOTE: if the leds are off on the current button state, then this will not make the lights turn on
 void RGBButton::turn_on_leds() {
     led_on = true;
 }
 
+// TURN ON LEDS: turns on the leds using the specified R, G, and B values
+// PARAMS: R, G, and B values
 void RGBButton::turn_on_leds(int _R, int _G, int _B) {
     current_led_state[R] = constrain(_R, 0, max_bright);
     current_led_state[G] = constrain(_G, 0, max_bright);
     current_led_state[B] = constrain(_B, 0, max_bright);
-    led_on = true;
+    turn_on_leds();
 }
 
+// TURN OFF LEDS: turns of the leds by setting the led_on to false
 void RGBButton::turn_off_leds() {
     led_on = false;
 }
 
+// MOMENTARY BUTTON: methods sets the button to either momentary or not
+// PARAMS: if input set to true then switch set to momentary
 void RGBButton::momentary_button (bool _is_momentary){
     is_momentary = _is_momentary;
 }

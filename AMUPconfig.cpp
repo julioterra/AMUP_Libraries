@@ -4,7 +4,6 @@
  */
 
 #include "AMUPconfig.h"
-#include "WProgram.h"
 
 int add_number_to_string(int number, char * destination, int counter){
     char live_message[12];

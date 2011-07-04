@@ -1,11 +1,12 @@
 #include "AnalogSwitch.h"
 
+
 // CONSTRUCTOR: initializes an instance of the AnalogSwitch class
 // PARAMS: an id number for the switch and the input pin number
 AnalogSwitch::AnalogSwitch(int _ID, int _pin) : InputElement(_ID, _pin) {
     new_state = false;
     current_state = 0;
-    previous_state = 0;
+    last_reading = 0;
     range_min = 0;
     range_max = 1023;
     range = range_max - range_min;
@@ -31,9 +32,9 @@ bool AnalogSwitch::available() {
     current_state = ((current_state * (AVG_READINGS -1)) + rawState)/AVG_READINGS;
 
     // check if the sensor readings have exceeded a threshold
-    if (current_state > (previous_state + STATE_CHANGE_THRESH) || current_state < (previous_state - STATE_CHANGE_THRESH)) {
+    if (current_state > (last_reading + STATE_CHANGE_THRESH) || current_state < (last_reading - STATE_CHANGE_THRESH)) {
         new_state = true;
-        previous_state = current_state;
+        last_reading = current_state;
         if (range == OUTPUT_RANGE) output_state = current_state;
         else output_state = int(float(float((current_state) - range_min)/float(range)) * float(OUTPUT_RANGE));
         return true;   
