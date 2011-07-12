@@ -25,7 +25,9 @@
 class RGBButton: public Switch {
     
     public:    
-        int led_pins[RGB_COUNT];    // holds the pin numbers for the R, G, and B pins
+		#define DIGITAL_SWITCH_DEBOUNCE   50       // interval of time that new input will be ignored via digital sensors
+
+		int led_pins[RGB_COUNT];    // holds the pin numbers for the R, G, and B pins
         int max_bright;             // holds the maximum brightness for each RBG output
         int toggle_states;          // holds number of toggle states for a given switch (6 Max)
         int led_digital_states[TOGGLE_MAX][RGB_COUNT];  // holds brightness of each led for diff. toggle states 
