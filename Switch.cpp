@@ -24,8 +24,7 @@ void Switch::invert_switch(bool _onState) {
     else {
         is_inverted = false;   
         digitalWrite(pin, LOW);
-    }
-    
+    }    
 }
 
 // AVAILBLE: reads switch pin, debounces reading, and determines if state has changed

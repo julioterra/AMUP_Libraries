@@ -8,6 +8,7 @@ RGBButton::RGBButton(int _ID, int _input_pin, int _states) : Switch(_ID, _input_
     
     led_available = false;
     led_on = false;
+    led_midi_control = false;
     
     for (int j = 0; j < RGB_COUNT; j++) current_led_state[j] = 0;
     for (int i = 0; i < TOGGLE_MAX; i++) 
@@ -32,15 +33,27 @@ bool RGBButton::set_led_state(int _state, int _R, int _G, int _B) {
     return true;
 }
 
+void RGBButton::set_midi_control(bool _midi_in_control) {
+    if (_midi_in_control) led_midi_control = true;
+    else led_midi_control = false;
+    
+}
+
 // AVAILABLE: method that reads button and determines if state has changed (new data available
 // RETURNS: true if state has changed, false if state has not changed
 bool RGBButton::available() {    
-    update_leds();
+//	if (!led_midi_control) update_leds();
+	update_leds();
     if(Switch::available()) {
-        if (is_momentary) {
-            set_current_led_state(current_state);
+        if (led_midi_control) {
+			output_state = current_state;
+            return true; 
+		}
+		else if (is_momentary) {
+			set_current_led_state(current_state);
             return true; 
         }
+
         else if (current_state > LOW) {
             new_state = true;
             output_state++;
@@ -59,6 +72,7 @@ void RGBButton::set_current_led_state(int _state) {
     current_led_state[R] = led_digital_states[_state][R];
     current_led_state[G] = led_digital_states[_state][G];
     current_led_state[B] = led_digital_states[_state][B];
+    update_leds();
 }
 
 

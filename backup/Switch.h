@@ -1,6 +1,18 @@
 /*
- Switch.h - Library for the AMUP Button Pad.
+ 
+ AMUP Input Element Libraries, Switch
  Created by Julio Terra, June 4, 2011.
+ 
+ This is the switch library from the AMUP Input Element set. This library 
+ handles simple switches with two states (on and off). It supports both 
+ momentary and non-momentary switches. 
+ 
+ Hierarchy:
+ - Parents: Input Element
+ - Children: RGBButton [RGBButtonMatrix, RGBButtonTLC] 
+ 
+ File name: Switch.h
+ 
  */
 
 #ifndef Switch_h
@@ -12,26 +24,18 @@
 
 class Switch: public InputElement {
     public:
-        // general constants
-        #define DIGITAL_SWITCH_DEBOUNCE   100   // interval of time that new input will be ignored via digital sensors
-        #define DIGITAL_PREVIOUS_DEBOUNCE 50       // interval of time that new input will be ignored via digital sensors
-
-        // switch states
-        #define OFF            0   
-        #define ON             1
-
         // holds whether the signal is inverted (e.g. LOW switch state is equal to switch ON or HIGH)
-        bool is_inverted;
-        bool is_momentary;
-
-        // variables that manage switch state
-        int previous_state;          // holds the current momentary state of the switch (on, off, or analog number)
-        long last_state_switch;       // holds last time the switch state was changed
-        long last_read_previous_state; // holds the last time the current state was recorded
+        bool is_inverted;               // holds whether the switch is inverted (uses a pullup resistor)
+        bool is_momentary;              // flag set to true if switch is momentary
     
-        Switch(int, int);
-        void invert_switch(bool);
-        bool available();
+        // variables that manage switch state
+        int last_reading;               // holds the last reading from the switch
+        long unsigned reading_debounce_time;      // holds the last time the switch state changed based on the reading 
+    
+        // constructors and methods
+        Switch(int, int);               // class constructor
+        void invert_switch(bool);       // method that sets this switch to inverted mode, with pullup resistor
+        bool available();               // redefined method that returns whether switch state has changed
 };
 
 #endif

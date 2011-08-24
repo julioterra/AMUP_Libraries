@@ -36,6 +36,7 @@ class InputElement {
         virtual bool available() {};    // placeholder function that checks whether the switch's state has changed
         float get_state();              // function that returns current_state and resets new_state flag
         float get_print_state();        // same as get_state function but also prints current_state to serial port
+        float get_print_byte_state();   // same as get_state function but also prints current_state to serial port
 };
 
 #endif

@@ -30,7 +30,7 @@ class Switch: public InputElement {
     
         // variables that manage switch state
         int last_reading;               // holds the last reading from the switch
-        int reading_debounce_time;      // holds the last time the switch state changed based on the reading 
+        long unsigned reading_debounce_time;      // holds the last time the switch state changed based on the reading 
     
         // constructors and methods
         Switch(int, int);               // class constructor

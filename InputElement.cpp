@@ -23,3 +23,10 @@ float InputElement::get_print_state() {
     Serial.println(int(output_state));
     return get_state();
 }
+
+// GET_STATE: returns the current state of the switch and prints the state to serial monitor
+// RETURN: current state
+float InputElement::get_print_byte_state() {
+    Serial.print(byte(int(output_state)));
+    return get_state();
+}

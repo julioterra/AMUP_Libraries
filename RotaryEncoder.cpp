@@ -49,7 +49,9 @@ void RotaryEncoder::event() {
 bool RotaryEncoder::available(){
     if (new_state) {
         current_state = encoderPos;
-        output_state = current_state;
+        output_state += current_state;
+        if (output_state < 0) output_state = 127;
+        else if (output_state > 127) output_state = 0;
         encoderPos = 0;         
     }
     return new_state;     
