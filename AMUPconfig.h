@@ -33,12 +33,12 @@
 #define LED_MAX_BRIGHT_MATRIX     1
 
 // Switch Debounce Constants
-#define TOGGLE_MAX                5        // maximum number of toggle states supported by RGB Buttons
-#define DIGITAL_SWITCH_DEBOUNCE   80       // interval of time that new input will be ignored via digital sensors
+#define TOGGLE_MAX                10        // maximum number of toggle states supported by RGB Buttons
+#define DIGITAL_SWITCH_DEBOUNCE   50       // interval of time that new input will be ignored via digital sensors
 
 // I2C - Air 2 Console: Message Size 
-#define I2C_RECEIVE_MSG_SIZE     25        // size of the the i2C transmit messsage
-#define I2C_TRANSMIT_MSG_SIZE    26
+#define I2C_RECEIVE_MSG_SIZE     12        // size of the the i2C transmit messsage
+#define I2C_TRANSMIT_MSG_SIZE    13
 
 // Serial - Air 2 Button: Message Size, followed by Init and Lock Flags
 #define AIR_SERIAL_MSG_SIZE             9
