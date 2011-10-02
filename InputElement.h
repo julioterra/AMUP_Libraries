@@ -34,6 +34,9 @@ class InputElement {
 
         InputElement(int, int);         // initializes all variables
         virtual bool available() {};    // placeholder function that checks whether the switch's state has changed
+        virtual void invert_switch(bool) {};
+        virtual void set_analog_range(int, int) {};
+        virtual void set_output_range(int) {};
         float get_state();              // function that returns current_state and resets new_state flag
         float get_print_state();        // same as get_state function but also prints current_state to serial port
         float get_print_byte_state();   // same as get_state function but also prints current_state to serial port
