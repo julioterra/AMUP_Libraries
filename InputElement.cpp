@@ -14,7 +14,7 @@ InputElement::InputElement(int _ID, int _pin) {
 // GET_STATE: returns the current state of the switch and sets new_state flag to false
 // RETURN: current state
 float InputElement::get_state() {
-    if (new_state) new_state = false;
+    new_state = false;
     return output_state;
 }
 // GET_STATE: returns the current state of the switch and prints the state to serial monitor

@@ -56,7 +56,10 @@ bool Switch::available() {
     last_reading = new_reading;
     
     // return true if state has changed, and false if state did not change
-    if (new_state) return true;
+    if (new_state) {
+        return true;
+        new_state = false;
+    }
     return false;
 }
 
