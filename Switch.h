@@ -20,7 +20,7 @@
 
 #include "WProgram.h"
 #include "AMUPconfig.h"
-#include "InputElement.h"
+#include "utility/InputElement.h"
 
 class Switch: public InputElement {
     public:

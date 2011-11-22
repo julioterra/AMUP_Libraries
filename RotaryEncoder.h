@@ -19,7 +19,7 @@
 
 #include "WProgram.h"
 #include "AMUPconfig.h"
-#include "InputElement.h"
+#include "utility/InputElement.h"
 
 class RotaryEncoder: public InputElement {
     private: 
