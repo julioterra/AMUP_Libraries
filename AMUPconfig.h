@@ -12,7 +12,11 @@
 #ifndef config_h
 #define AirSensor_h
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+  #else
+  #include "WProgram.h"
+#endif
 
 /** \file
  Configuration for AMUP sketches. This file holds constants that define variables that are used across multiple.  

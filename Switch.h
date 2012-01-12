@@ -18,7 +18,12 @@
 #ifndef Switch_h
 #define Switch_h
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+  #else
+  #include "WProgram.h"
+#endif
+
 #include "AMUPconfig.h"
 #include "utility/InputElement.h"
 

@@ -17,7 +17,12 @@
 #ifndef RGBButton_h
 #define RGBButton_h
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+  #else
+  #include "WProgram.h"
+#endif
+
 #include "Switch.h"
 #include "AMUPconfig.h"
 #include <Tlc5940.h>
